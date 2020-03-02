@@ -1,0 +1,11 @@
+﻿<AuthorizeView>
+    <Authorized>
+        <form action="/logout" method="post">
+            @($"欢迎使用，{context.User.Identity.Name}") <input type="submit" value="登出" class="btn btn-link" />
+        </form>
+    </Authorized>
+    <NotAuthorized>
+        <a href="/">登录</a>
+    </NotAuthorized>
+</AuthorizeView>
+

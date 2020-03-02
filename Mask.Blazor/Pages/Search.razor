@@ -1,0 +1,59 @@
+﻿@page "/Search"
+@using Mask.Blazor.Models
+@using Mask.Blazor.Services
+
+@inject UserService userService
+
+<div class="container">
+    <div class="col">
+        <div class="row" style="margin-bottom:20px">
+            <div class="input-group">
+                <input type="text" @bind-value="id" class="form-control" placeholder="请输入身份证号进行查询" />
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" @onclick="GetAppointmentResult">查询</button>
+                </div>
+            </div>
+        </div>
+        @if (IsASuccessedAppointment())
+        {
+            <AppointmentResult Result="appointmentResultModel"></AppointmentResult>
+        }
+        @if (IsASuccessedAppointment() == false && searched)
+        {
+            <div class="row alert alert-warning" role="alert">
+                没有找到预约信息
+            </div>
+        }
+    </div>
+</div>
+@code{
+    string id;
+    bool searched;
+    ResultModel appointmentResultModel;
+
+    private async Task GetAppointmentResult()
+    {
+        searched = true;
+        appointmentResultModel = await userService.GetAppointmentResult(id);
+    }
+
+    private bool IsASuccessedAppointment()
+    {
+        if (appointmentResultModel == null)
+        {
+            return false;
+        }
+
+        if (string.IsNullOrEmpty(appointmentResultModel.AppointmentDate))
+        {
+            return false;
+        }
+
+        if ((Utils.DatetimeUtils.GetChinaDatetimeNow() - DateTime.Parse(appointmentResultModel.AppointmentDate)).TotalDays >= 5)
+        {
+            return false;
+        }
+
+        return true;
+    }
+}

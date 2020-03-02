@@ -1,0 +1,146 @@
+﻿@page "/newuser"
+@using Mask.Blazor.Models
+@using Mask.Blazor.Services
+
+@inject MaskService maskService
+@inject UserService userService
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4 xxs">
+
+            <div class="form-group">
+                <label>身份证号</label>
+                <input type="text" @bind-value="@userInfo.IDCard" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>姓名</label>
+                <input type="text" @bind-value="@userInfo.Name" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>手机号</label>
+                <input type="text" @bind-value="@userInfo.Tel" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>抢购药店ID</label>
+                <input type="text" @bind-value="@userInfo.ShopID" class="form-control" />
+            </div>
+            @if (inputValid == false)
+            {
+                <div class="alert alert-danger" role="alert">
+                    请填写所有信息
+                </div>
+            }
+            @if (submited)
+            {
+                <div class="alert alert-success" role="alert">
+                    提交成功
+                </div>
+            }
+            <button class="btn btn-info" @onclick="AddUserInfo" type="button">提交</button>
+        </div>
+        <div class="col">
+            <div>
+                <input type="text" class="form-control" @bind-value="Filter" placeholder="请输入药店相关信息，按回车进行过滤，多个信息请使用空格隔开" />
+            </div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <td scope="col">药店ID</td>
+                        <td scope="col">药店名称</td>
+                        <td scope="col">药店地址</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (shops != null)
+                    {
+                        foreach (var shop in shops)
+                        {
+                            <tr>
+                                <td>@shop.id</td>
+                                <td>@shop.serviceName</td>
+                                <td>@shop.serviceAddress</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+            <div>
+                <span>没有找到想找到的药店？请点击右侧刷新药店按钮</span>
+                <button class="btn btn-light" @onclick="UpdateShops" type="button">刷新</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+@code {
+    UserModel userInfo = new UserModel();
+    List<ShopModel> shops;
+    List<ShopModel> shopSource;
+    List<ShopModel> ShopSource
+    {
+        get => shopSource;
+        set
+        {
+            this.shopSource = value;
+            if (string.IsNullOrWhiteSpace(Filter))
+            {
+                shops = shopSource?.ToList();
+            }
+            else
+            {
+                var keywords = Filter.Split(' ');
+                shops = shopSource?.Where(p => keywords.All(kw => p.serviceAddress.Contains(kw) || p.serviceName.Contains(kw)))?.ToList();
+            }
+        }
+    }
+    bool inputValid = true;
+    bool submited = false;
+    string Filter
+    {
+        get => filter;
+        set
+        {
+            this.filter = value;
+            if (string.IsNullOrWhiteSpace(Filter))
+            {
+                shops = shopSource.ToList();
+            }
+            else
+            {
+                var keywords = Filter.Split(' ');
+                shops = shopSource?.Where(p => keywords.All(kw => p.serviceAddress.Contains(kw) || p.serviceName.Contains(kw)))?.ToList();
+            }
+        }
+    }
+    string filter;
+    private async Task AddUserInfo()
+    {
+        if (string.IsNullOrWhiteSpace(userInfo.IDCard) ||
+            string.IsNullOrWhiteSpace(userInfo.Name) ||
+            string.IsNullOrWhiteSpace(userInfo.Tel) ||
+            string.IsNullOrWhiteSpace(userInfo.ShopID))
+        {
+            inputValid = false;
+            return;
+        }
+        inputValid = true;
+        userInfo.IDCard = userInfo.IDCard.Trim();
+        userInfo.Name = userInfo.Name.Trim();
+        userInfo.Tel = userInfo.Tel.Trim();
+        await userService.AddUser(userInfo);
+        submited = true;
+    }
+    private async Task UpdateShops()
+    {
+        ShopSource = await maskService.UpdateShops();
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        ShopSource = await maskService.GetShops();
+    }
+    private void HandleValidSubmit()
+    {
+        Console.WriteLine("OnValidSubmit");
+    }
+}

@@ -1,0 +1,29 @@
+﻿@using Mask.Blazor.Models
+
+<div class="jumbotron">
+    <h5>@Result.ShopName</h5>
+    <hr class="my-4" />
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">领取地址：</label>
+        <div class="col-sm-9">
+            <input type="text" readonly="readonly" class="form-control" value="@Result.ShopAddress" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">领取时间：</label>
+        <div class="col-sm-9">
+            <input type="text" readonly="readonly" class="form-control" value="@Result.AppointmentDate" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">预约编码：</label>
+        <div class="col-sm-9">
+            <input type="text" readonly="readonly" class="form-control" value="@Result.AppointmentCode" />
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public ResultModel Result { get; set; }
+}

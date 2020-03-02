@@ -1,0 +1,36 @@
+﻿@page "/"
+@using Mask.Blazor.Models
+@using Mask.Blazor.Services
+
+@inject UserService userService
+
+<AuthorizeView>
+    <NotAuthorized>
+        <form class="container" method="post" action="/login">
+            <div class="row align-items-center" style="height:200px">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>帐号</label>
+                        <input type="text" name="account" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>密码</label>
+                        <input type="password" name="password" class="form-control" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">登录</button>
+                </div>
+            </div>
+        </form>
+    </NotAuthorized>
+    <Authorized>
+        <div class="jumbotron">
+            <h1 class="display-4">欢迎来到新大陆~</h1>
+            <p class="lead">一个预约😷的地方</p>
+            <hr class="my-4">
+            <p>先添加用户信息，第二天根据身份证号查看预约结果</p>
+            <p>不要添加过多用户，以免网站被封。。。</p>
+        </div>
+    </Authorized>
+</AuthorizeView>
+@code{
+}
