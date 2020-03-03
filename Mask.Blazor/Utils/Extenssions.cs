@@ -94,11 +94,13 @@ namespace Mask.Blazor.Utils
             CommonValue.HangfireDashboardUrl = hangfireDashboardUrl;
 
             var connectionString = Environment.GetEnvironmentVariable(nameof(CommonValue.ConnectionString));
-            if (string.IsNullOrWhiteSpace(connectionString))
+            if (string.IsNullOrWhiteSpace(connectionString) == false)
             {
-                throw new Exception("pls set connectionString");
+                CommonValue.ConnectionString = connectionString;
             }
-            CommonValue.ConnectionString = connectionString;
+
+            CommonValue.ThreadNum = Environment.GetEnvironmentVariable(nameof(CommonValue.ThreadNum));
+            CommonValue.SleepTime = Environment.GetEnvironmentVariable(nameof(CommonValue.SleepTime));
         }
 
         public static T ConvertFromRedisHash<T>(this Dictionary<string, string> dictionay) where T : new()
@@ -112,7 +114,7 @@ namespace Mask.Blazor.Utils
             return obj;
         }
 
-        public static object[] ConvertToRedisHash<T>(this T t) => 
+        public static object[] ConvertToRedisHash<T>(this T t) =>
             typeof(T).GetProperties()
             .Where(p => p.GetCustomAttribute<ConvertToIgnoreAttribute>() == null || p.GetCustomAttribute<ConvertToIgnoreAttribute>().Ignore == false)
             .SelectMany(p => new object[] { p.Name, p.GetValue(t) })

@@ -15,10 +15,14 @@ namespace Mask.Blazor.Hangfire.Jobs
         private readonly IServiceProvider serviceProvider;
         private readonly IMaskDatabase maskDataBase;
         private static readonly TimeSpan endTime = new TimeSpan(21, 0, 0);
+        private int sleepTime;
+        private int threadNum;
         public AppointmentJob(IMaskDatabase maskDataBase, IServiceProvider serviceProvider)
         {
             this.maskDataBase = maskDataBase;
             this.serviceProvider = serviceProvider;
+            int.TryParse(CommonValue.ThreadNum, out threadNum);
+            int.TryParse(CommonValue.SleepTime, out sleepTime);
         }
         public void DoJob()
         {
@@ -45,7 +49,7 @@ namespace Mask.Blazor.Hangfire.Jobs
             {
                 while (DatetimeUtils.GetChinaDatetimeNow().TimeOfDay < endTime)
                 {
-                    Enumerable.Range(1, 10).Select(p => new Task(() =>
+                    Enumerable.Range(1, threadNum).Select(p => new Task(() =>
                     {
 
                         if (serviceProvider.GetService<MaskWebClient>().MakeAppointment(parm, out var result))
@@ -57,7 +61,7 @@ namespace Mask.Blazor.Hangfire.Jobs
 
                         }
                     }, cts.Token));
-                    Thread.Sleep(10000);
+                    Thread.Sleep(sleepTime);
                 }
             }, cts.Token);
         }

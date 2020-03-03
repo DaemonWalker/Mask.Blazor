@@ -8,6 +8,8 @@ EXPOSE 443
 ENV PublicKey MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDFZLucigIvl/AAliSrlP0QI8vxB11C9iAEsvvZto3A/yh9MIlCoKVFbUvqAEuLpxJxMqTDDJA4C7xoukAcyXJTEiEILeqBbqSxDlsxh+L3msaim+ZKKoUnJvxuekJyFOi9H0seZbS/WytkqKhKmATOe0w94JMHFkFFON4QyERehwIDAQAB
 ENV ConnectionString dummy
 ENV HangfireDashboardUrl dummy
+ENV ThreadNum 30
+ENV SleepTime 5000
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
