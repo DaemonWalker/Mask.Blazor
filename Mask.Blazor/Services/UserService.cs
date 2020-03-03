@@ -13,8 +13,8 @@ namespace Mask.Blazor.Services
 {
     public class UserService
     {
-        private readonly MaskDataBase maskDataBase;
-        public UserService(MaskDataBase maskDataBase)
+        private readonly IMaskDatabase maskDataBase;
+        public UserService(IMaskDatabase maskDataBase)
         {
             this.maskDataBase = maskDataBase;
         }
@@ -43,7 +43,17 @@ namespace Mask.Blazor.Services
         public async Task<AccountModel> Login(AccountModel account)
         {
             return await maskDataBase.Login(account);
-           
+
+        }
+
+        public async Task<List<AccountModel>> GetAccounts()
+        {
+            return await maskDataBase.GetAccounts();
+        }
+
+        public async Task<List<UserModel>> GetUsers()
+        {
+            return await maskDataBase.GetUsers();
         }
     }
 }

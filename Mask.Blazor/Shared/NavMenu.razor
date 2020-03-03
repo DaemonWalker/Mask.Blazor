@@ -1,4 +1,5 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿@using System.Collections.ObjectModel
+<div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">🌰😘</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
@@ -29,8 +30,14 @@
         <AuthorizeView Roles="2">
             <Authorized>
                 <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="/users">
+                        <span class="oi oi-person" aria-hidden="true"></span> 抢购人员信息
+                    </NavLink>
+                    <NavLink class="nav-link" href="/accounts">
+                        <span class="oi oi-account-login" aria-hidden="true"></span> 用户登录信息
+                    </NavLink>
                     <NavLink class="nav-link" href="@Utils.CommonValue.HangfireDashboardUrl">
-                        <span class="oi oi-fire" aria-hidden="true"></span> 后台任务模板
+                        <span class="oi oi-fire" aria-hidden="true"></span> 后台任务管理
                     </NavLink>
                 </li>
             </Authorized>
@@ -40,7 +47,6 @@
 
 @code {
     private bool collapseNavMenu = true;
-
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()

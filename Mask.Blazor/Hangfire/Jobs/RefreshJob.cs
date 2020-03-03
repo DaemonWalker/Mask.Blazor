@@ -11,8 +11,8 @@ namespace Mask.Blazor.Hangfire.Jobs
     public class RefreshJob
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly MaskDataBase maskDataBase;
-        public RefreshJob(IServiceProvider serviceProvider, MaskDataBase maskDataBase)
+        private readonly IMaskDatabase maskDataBase;
+        public RefreshJob(IServiceProvider serviceProvider, IMaskDatabase maskDataBase)
         {
             this.serviceProvider = serviceProvider;
             this.maskDataBase = maskDataBase;

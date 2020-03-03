@@ -11,8 +11,8 @@ namespace Mask.Blazor.Hangfire.Jobs
     public class CheckJob
     {
         private IServiceProvider serviceProvider;
-        private MaskDataBase maskDataBase;
-        public CheckJob(MaskDataBase maskDataBase, IServiceProvider serviceProvider)
+        private IMaskDatabase maskDataBase;
+        public CheckJob(IMaskDatabase maskDataBase, IServiceProvider serviceProvider)
         {
             this.maskDataBase = maskDataBase;
             this.serviceProvider = serviceProvider;

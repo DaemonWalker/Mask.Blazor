@@ -1,0 +1,57 @@
+﻿@page "/users"
+
+@using Mask.Blazor.Models
+@using Mask.Blazor.Services
+
+@inject UserService userService
+@inject MaskService maskService
+@attribute [Authorize(Roles = "2")]
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>身份证号</th>
+                        <th>姓名</th>
+                        <th>手机号</th>
+                        <th>药店ID</th>
+                        <th>药店名称</th>
+                        <th>抢购时间</th>
+                        <th>预约码</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (shops != null && users != null)
+                    {
+                        foreach (var user in users)
+                        {
+                            <tr>
+                                <td>@user.IDCard</td>
+                                <td>@user.Name</td>
+                                <td>@user.Tel</td>
+                                <td>@shops.FirstOrDefault(p => p.id == user.ShopID)?.id</td>
+                                <td>@shops.FirstOrDefault(p => p.id == user.ShopID)?.serviceName</td>
+                                <td>@user.LastAppointmentDate</td>
+                                <td>@user.AppointmentCode</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    List<UserModel> users;
+    List<ShopModel> shops;
+    protected async override Task OnInitializedAsync()
+    {
+        shops = await maskService.GetShops();
+        users = (await userService.GetUsers())
+            .OrderByDescending(p => (DateTime.TryParse(p.LastAppointmentDate, out var date) ? date : DateTime.MinValue))
+            .ToList();
+    }
+}

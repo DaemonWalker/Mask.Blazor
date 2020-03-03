@@ -13,9 +13,9 @@ namespace Mask.Blazor.Hangfire.Jobs
     public class AppointmentJob
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly MaskDataBase maskDataBase;
+        private readonly IMaskDatabase maskDataBase;
         private static readonly TimeSpan endTime = new TimeSpan(21, 0, 0);
-        public AppointmentJob(MaskDataBase maskDataBase, IServiceProvider serviceProvider)
+        public AppointmentJob(IMaskDatabase maskDataBase, IServiceProvider serviceProvider)
         {
             this.maskDataBase = maskDataBase;
             this.serviceProvider = serviceProvider;

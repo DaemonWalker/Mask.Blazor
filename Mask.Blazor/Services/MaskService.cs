@@ -9,8 +9,8 @@ namespace Mask.Blazor.Services
 {
     public class MaskService
     {
-        private MaskDataBase maskDataBase;
-        public MaskService(MaskDataBase maskDataBase)
+        private IMaskDatabase maskDataBase;
+        public MaskService(IMaskDatabase maskDataBase)
         {
             this.maskDataBase = maskDataBase;
         }

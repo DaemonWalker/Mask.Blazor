@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mask.Blazor.Utils;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -17,7 +18,9 @@ namespace Mask.Blazor.Models
         [Required]
         public string ShopID { get; set; }
 
+        [ConvertToIgnore]
         public string LastAppointmentDate { get; set; } = "2000/1/1";
+        [ConvertToIgnore]
         public string AppointmentCode { get; set; }
 
     }

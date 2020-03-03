@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -22,7 +23,7 @@ namespace Mask.Blazor.Utils
     {
         public static void AddMask(this IServiceCollection serviceDescriptors)
         {
-            serviceDescriptors.AddSingleton<MaskDataBase>();
+            serviceDescriptors.AddSingleton<IMaskDatabase, MaskDatabase>();
             serviceDescriptors.AddSingleton<UserService>();
             serviceDescriptors.AddSingleton<MaskService>();
             serviceDescriptors.AddTransient<MaskWebClient>();
@@ -95,7 +96,7 @@ namespace Mask.Blazor.Utils
             var connectionString = Environment.GetEnvironmentVariable(nameof(CommonValue.ConnectionString));
             if (string.IsNullOrWhiteSpace(connectionString))
             {
-                throw new Exception("pls set redis connectionString");
+                throw new Exception("pls set connectionString");
             }
             CommonValue.ConnectionString = connectionString;
         }
@@ -111,6 +112,10 @@ namespace Mask.Blazor.Utils
             return obj;
         }
 
-        public static object[] ConvertToRedisHash<T>(this T t) => typeof(T).GetProperties().SelectMany(p => new object[] { p.Name, p.GetValue(t) }).ToArray();
+        public static object[] ConvertToRedisHash<T>(this T t) => 
+            typeof(T).GetProperties()
+            .Where(p => p.GetCustomAttribute<ConvertToIgnoreAttribute>() == null || p.GetCustomAttribute<ConvertToIgnoreAttribute>().Ignore == false)
+            .SelectMany(p => new object[] { p.Name, p.GetValue(t) })
+            .ToArray();
     }
 }

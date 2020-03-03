@@ -1,4 +1,7 @@
 ﻿@page "/newuser"
+
+@attribute [Authorize]
+
 @using Mask.Blazor.Models
 @using Mask.Blazor.Services
 
@@ -138,9 +141,5 @@
     protected override async Task OnInitializedAsync()
     {
         ShopSource = await maskService.GetShops();
-    }
-    private void HandleValidSubmit()
-    {
-        Console.WriteLine("OnValidSubmit");
     }
 }

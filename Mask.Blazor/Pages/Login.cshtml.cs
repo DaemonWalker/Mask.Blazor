@@ -17,8 +17,8 @@ namespace Mask.Blazor.Pages
     [AllowAnonymous]
     public class LoginModel : PageModel
     {
-        private readonly MaskDataBase maskDataBase;
-        public LoginModel(MaskDataBase maskDataBase)
+        private readonly IMaskDatabase maskDataBase;
+        public LoginModel(IMaskDatabase maskDataBase)
         {
             this.maskDataBase = maskDataBase;
         }

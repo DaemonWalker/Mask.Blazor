@@ -9,16 +9,17 @@ using System.Threading.Tasks;
 
 namespace Mask.Blazor.Data
 {
-    public class MaskDataBase
+    public class MaskDatabase : IMaskDatabase
     {
         const string ShopIDListKey = "ShopIDs";
         const string ShopIDKey = "Shop";
         const string IDListKey = "IDs";
         const string IDKey = "ID";
         const string AccountKey = "Account";
+        const string AccountListKey = "Accounts";
         private readonly CSRedisClient database;
         private readonly IServiceProvider serviceProvider;
-        public MaskDataBase(IServiceProvider serviceProvider)
+        public MaskDatabase(IServiceProvider serviceProvider)
         {
             database = new CSRedisClient(CommonValue.ConnectionString);
             RedisHelper.Initialization(database);
@@ -43,8 +44,8 @@ namespace Mask.Blazor.Data
             return userInfo;
         }
         public async Task<List<ShopModel>> GetAllShops() => (await database.SMembersAsync(ShopIDListKey)).Select(p => GetShop(p).ConfigureAwait(false).GetAwaiter().GetResult()).ToList();
-        public async Task<List<UserModel>> GetAllUsers() => (await database.SMembersAsync(IDListKey)).Select(p => GetUser(p).ConfigureAwait(false).GetAwaiter().GetResult()).ToList();
-        public async Task<List<UserModel>> GetAllNeedAppointmentUsers() => (await GetAllUsers()).Where(p => DateTime.TryParse(p.LastAppointmentDate, out DateTime dt) == false || (DatetimeUtils.GetChinaDatetimeNow() - dt).TotalDays > 5).ToList();
+        public async Task<List<UserModel>> GetUsers() => (await database.SMembersAsync(IDListKey)).Select(p => GetUser(p).ConfigureAwait(false).GetAwaiter().GetResult()).ToList();
+        public async Task<List<UserModel>> GetAllNeedAppointmentUsers() => (await GetUsers()).Where(p => DateTime.TryParse(p.LastAppointmentDate, out DateTime dt) == false || (DatetimeUtils.GetChinaDatetimeNow() - dt).TotalDays > 5).ToList();
         public async Task AddOrUpdateUser(UserModel userInfo)
         {
             var entries = userInfo.ConvertToRedisHash();
@@ -73,6 +74,12 @@ namespace Mask.Blazor.Data
             var account = await database.HGetAllAsync(GetAccountKey(accountModel.Account));
             return account.ConvertFromRedisHash<AccountModel>();
         }
+
+        public async Task<List<AccountModel>> GetAccounts() => 
+            (await database.SMembersAsync(AccountListKey))
+            .Select(accont => database.HGetAllAsync(GetAccountKey(accont)).ConfigureAwait(false).GetAwaiter().GetResult().ConvertFromRedisHash<AccountModel>())
+            .ToList();
+
         private static string GetShopIDKey(string shopID) => $"{ShopIDKey}{shopID}";
         private static string GetIDKey(string id) => $"{IDKey}{id}";
         private static string GetAccountKey(string account) => $"{AccountKey}{account}";

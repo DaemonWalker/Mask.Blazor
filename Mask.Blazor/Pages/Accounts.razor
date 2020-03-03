@@ -1,0 +1,44 @@
+﻿@page "/accounts"
+
+@using Mask.Blazor.Models
+@using Mask.Blazor.Services
+
+@inject UserService userService
+@attribute [Authorize(Roles = "2")]
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>帐号</th>
+                        <th>密码</th>
+                        <th>级别</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (accounts != null)
+                    {
+                        foreach (var account in accounts)
+                        {
+                            <tr>
+                                <td>@account.Account</td>
+                                <td>@account.Password</td>
+                                <td>@account.Level</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    List<AccountModel> accounts;
+    protected async override Task OnInitializedAsync()
+    {
+        accounts = (await userService.GetAccounts()).OrderByDescending(p => int.Parse(p.Level)).ToList();
+    }
+}
