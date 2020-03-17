@@ -21,6 +21,7 @@
       "environmentVariables": {
         "ThreadNum": "30",
         "HangfireDashboardUrl": "/hangfire",
+        "ConnectionString": "49.232.131.156:6379,password=!q111111",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "SleepTime": "5000"
       },
